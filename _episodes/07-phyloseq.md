@@ -110,10 +110,10 @@ Phyloseq is a library with tools to analyze and plot your metagenomics samples' 
 Once the libraries are installed, we must make them available for this R session. Now load the libraries (a process needed every time we begin a new work session in R):
 
 ~~~
-> library("phyloseq")
-> library("ggplot2")
-> library("RColorBrewer")
-> library("patchwork")
+> library(phyloseq)
+> library(ggplot2)
+> library(RColorBrewer)
+> library(patchwork)
 ~~~
 {: .language-r}
 
@@ -151,10 +151,9 @@ The "class" command indicates that we already have our phyloseq object.
 Let us try to access the data that is stored inside our `merged_metagenomes` object. Since a phyloseq object
 is a special object in R, we need to use the operator `@` to explore the subsections of data inside `merged_metagenomes`.
 If we type `merged_metagenomes@`, five options are displayed; `tax_table` and `otu_table` are the ones 
-we will use. After writing `merged_metagenomes@otu_table` or `merged_metagenomes@tax_table`, an option of `.Data` 
-will be the one chosen in both cases. Let us see what is inside our `tax_table`:
+we will use. Let us see what is inside our `tax_table`:
 ~~~
-> View(merged_metagenomes@tax_table@.Data)
+> View(merged_metagenomes@tax_table)
 ~~~
 {: .language-r}
 
@@ -171,14 +170,14 @@ Here we can see that the `tax_table` inside our phyloseq object stores all the t
 Next, let us get rid of some of the unnecessary characters 
 in the OTUs id and put names to the taxonomic ranks:
 
-To remove unnecessary characters in `.Data` (matrix), we will use the command `substring()`. This command helps extract or replace characters in a vector. To use the command, we have to indicate the vector (x) followed by the first element to replace or extract (first) and the last element to be replaced (last). For instance: `substring (x, first, last)`. `substring()` is a "flexible" command, especially to select
+To remove unnecessary characters `tax_table`, which is a matrix, we will use the command `substring()`. This command helps extract or replace characters in a vector. To use the command, we have to indicate the vector (x) followed by the first element to replace or extract (first) and the last element to be replaced (last). For instance: `substring (x, first, last)`. `substring()` is a "flexible" command, especially to select
    characters of different lengths, as in our case. Therefore, it is not necessary to indicate "last", so it will take the last position of the character by
-    default. Since a matrix is an arrangement of vectors, we can use this command. Each character in `.Data` is preceded by three spaces occupied by a
+    default. Since a matrix is an arrangement of vectors, we can use this command. Each character in `tax_table` is preceded by three spaces occupied by a
      letter and two underscores, for example: `o__Rhodobacterales`. In this case, "Rodobacterales" starts at position 4 with an R. So, to remove the unnecessary characters, we will use the following code:
 
 ~~~
-> merged_metagenomes@tax_table@.Data <- substring(merged_metagenomes@tax_table@.Data, 4)
-> colnames(merged_metagenomes@tax_table@.Data)<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+> merged_metagenomes@tax_table <- substring(merged_metagenomes@tax_table, 4)
+> colnames(merged_metagenomes@tax_table)<- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
 ~~~
 {: .language-r}
 
@@ -191,7 +190,7 @@ To remove unnecessary characters in `.Data` (matrix), we will use the command `s
 We will use a command named `unique()` to explore how many phyla we have. Let us see the result
 we obtain from the following code:
 ~~~
-> unique(merged_metagenomes@tax_table@.Data[,"Phylum"])
+> unique(merged_metagenomes@tax_table[,"Phylum"])
 ~~~
 {: .language-r}
 ~~~
@@ -213,7 +212,7 @@ we obtain from the following code:
 Knowing phyla is helpful, but what we need to know is how many of our OTUs have been assigned to the phylum
 Firmicutes?. Let´s use the command `sum()` to ask R:
 ~~~
-> sum(merged_metagenomes@tax_table@.Data[,"Phylum"] == "Firmicutes")
+> sum(merged_metagenomes@tax_table[,"Phylum"] == "Firmicutes")
 ~~~
 {: .language-r}
 ~~~
@@ -223,7 +222,7 @@ Firmicutes?. Let´s use the command `sum()` to ask R:
 
 Now, to know for that phylum in particular which taxa there are in a certain rank, we can also ask it to phyloseq.
 ~~~
-> unique(merged_metagenomes@tax_table@.Data[merged_metagenomes@tax_table@.Data[,"Phylum"] == "Firmicutes", "Class"])
+> unique(merged_metagenomes@tax_table[merged_metagenomes@tax_table[,"Phylum"] == "Firmicutes", "Class"])
 ~~~
 {: .language-r}
 ~~~
@@ -236,7 +235,7 @@ Now, to know for that phylum in particular which taxa there are in a certain ran
 Until now, we have looked at the part of the phyloseq object that stores the information about the taxonomy (at all the possible levels) of each OTU found in our samples. However, there is also a part of the phyloseq object that stores the information about how many sequenced reads corresponding to a certain OTU are in each sample. This table is the `otu_table`. 
 
 ~~~
-> View(merged_metagenomes@otu_table@.Data)
+> View(merged_metagenomes@otu_table)
 ~~~
 {: .language-r}
 
@@ -267,11 +266,11 @@ We will take advantage of this information later on in our analyses.
 >> Change the name of a new phylum wherever needed and the name of the rank we are asking for to get the result.
 >> As an example, here is the solution for Proteobacteria:
 >> ~~~ 
->> sum(merged_metagenomes@tax_table@.Data[,"Phylum"] == "Proteobacteria")
+>> sum(merged_metagenomes@tax_table[,"Phylum"] == "Proteobacteria")
 >> ~~~ 
 >> {: .language-r}
 >> ~~~
->> unique(merged_metagenomes@tax_table@.Data[merged_metagenomes@tax_table@.Data[,"Phylum"] == "Proteobacteria", "Genus"])
+>> unique(merged_metagenomes@tax_table[merged_metagenomes@tax_table[,"Phylum"] == "Proteobacteria", "Genus"])
 >> ~~~
 >> {: .language-r}
 >> 
@@ -288,7 +287,7 @@ We will take advantage of this information later on in our analyses.
 >> Go to the `tax_table`: 
 >>   
 >> ~~~ 
->> > View(merged_metagenomes@tax_table@.Data)
+>> > View(merged_metagenomes@tax_table)
 >> ~~~ 
 >> {: .language-r}
 >> Take note of the OTU number for some species:
@@ -299,7 +298,7 @@ We will take advantage of this information later on in our analyses.
 >>  
 >> Search for the row of the `otu_table` with the row name you chose.  
 >> ~~~
->> > merged_metagenomes@otu_table@.Data["1077935",]
+>> > merged_metagenomes@otu_table["1077935",]
 >> ~~~
 >> {: .language-r}
 >> ~~~
