@@ -171,9 +171,9 @@ and arbitrary decision, but who does not feel attracted to these incredible micr
 Let's do a little review of all that we saw today: **Transformation of the data; Manipulation of the 
 information; and plotting**:
 ~~~
-> cyanos_percentages <- transform_sample_counts(cyanos, function(x) x*100 / sum(x) )
 > cyanos_glom <- tax_glom(cyanos_percentages, taxrank = "Genus")
-> cyanos_df <- psmelt(cyanos_glom)
+> cyanos_percentages <- transform_sample_counts(cyanos_glom, function(x) x*100 / sum(x) )
+> cyanos_df <- psmelt(cyanos_percentages)
 > cyanos_df$Genus[cyanos_df$Abundance < 10] <- "Genera < 10.0 abund"
 > cyanos_df$Genus <- as.factor(cyanos_df$Genus)
 > genus_colors_cyanos<- colorRampPalette(brewer.pal(8,"Dark2")) (length(levels(cyanos_df$Genus)))  
